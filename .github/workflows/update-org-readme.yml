@@ -1,18 +1,15 @@
 name: Update org profile repo table
 
 on:
-  repository:
-    types: [created, renamed, deleted, transferred, publicized, privatized]
   push:
     branches: [main]
-    paths:
-      - "scripts/**"
-      - "profile/**"
-      - ".github/workflows/**"
   repository_dispatch:
     types: [update-repo-table]
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/10 * * * *"  # every 10 minutes — catches new repos automatically
+
+permissions:
+  contents: write
 
 jobs:
   update-table:
