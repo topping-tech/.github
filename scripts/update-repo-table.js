@@ -3,6 +3,9 @@
  * Regenerates the repository table in profile/README.md
  * Run locally: node scripts/update-repo-table.js
  * Requires: GITHUB_TOKEN or gh auth token, ORG (default topping-tech)
+ *
+ * Note: GITHUB_TOKEN in Actions cannot list private org repos.
+ * Private repos must be listed in scripts/pinned-repos.json so they are never dropped.
  */
 const fs = require("fs");
 const path = require("path");
@@ -11,8 +14,14 @@ const https = require("https");
 const ORG = process.env.ORG || "topping-tech";
 const README = path.join(__dirname, "..", "profile", "README.md");
 const EXTRAS = path.join(__dirname, "repo-extras.json");
+const PINNED = path.join(__dirname, "pinned-repos.json");
 
-const extras = fs.existsSync(EXTRAS) ? JSON.parse(fs.readFileSync(EXTRAS, "utf8")) : {};
+function loadJson(file) {
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
+}
+
+const extras = loadJson(EXTRAS);
+const pinned = loadJson(PINNED);
 
 function api(path) {
   return new Promise((resolve, reject) => {
@@ -52,7 +61,25 @@ async function fetchAllRepos() {
     if (batch.length < 100) break;
     page++;
   }
-  return repos.filter((r) => r.name !== ".github").sort((a, b) => a.name.localeCompare(b.name));
+  return repos.filter((r) => r.name !== ".github");
+}
+
+function mergeRepos(apiRepos) {
+  const byName = new Map(apiRepos.map((r) => [r.name, r]));
+
+  for (const [name, meta] of Object.entries(pinned)) {
+    if (!byName.has(name)) {
+      byName.set(name, {
+        name,
+        description: meta.description || "—",
+        html_url: meta.html_url || `https://github.com/${ORG}/${name}`,
+        private: meta.private !== false,
+      });
+      console.log(`Pinned (not in API): ${name}`);
+    }
+  }
+
+  return [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function buildLink(repo) {
@@ -97,10 +124,9 @@ function updateReadme(table) {
 }
 
 (async () => {
-  const repos = await fetchAllRepos();
-  const table = buildTable(repos);
-  const changed = updateReadme(table);
-  process.exit(changed ? 0 : 0);
+  const apiRepos = await fetchAllRepos();
+  const repos = mergeRepos(apiRepos);
+  updateReadme(buildTable(repos));
 })().catch((err) => {
   console.error(err.message);
   process.exit(1);

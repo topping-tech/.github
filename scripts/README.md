@@ -40,4 +40,22 @@ Edit `scripts/repo-extras.json`:
 }
 ```
 
+### Private repos (important)
+
+GitHub Actions `GITHUB_TOKEN` **cannot list private org repos**, so they would disappear from the table.
+
+Add every private repo to `scripts/pinned-repos.json`:
+
+```json
+{
+  "it-dev": {
+    "description": "Internal development workspace for Topping Tech systems.",
+    "private": true,
+    "html_url": "https://github.com/topping-tech/it-dev"
+  }
+}
+```
+
+When you create a new **private** repo, add it here before the next workflow run.
+
 The `.github` repo itself is excluded from the table.

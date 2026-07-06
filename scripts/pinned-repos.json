@@ -1,0 +1,7 @@
+{
+  "it-dev": {
+    "description": "Internal development workspace for Topping Tech systems.",
+    "private": true,
+    "html_url": "https://github.com/topping-tech/it-dev"
+  }
+}
