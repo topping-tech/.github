@@ -1,0 +1,30 @@
+# Topping Tech
+
+**Topping Tech** is the internal technology and documentation hub for **Topping Courier Inc.**
+
+We build the systems, playbooks, and operational knowledge that power Topping Courier's logistics, sales, and B2B operations.
+
+---
+
+## Repositories
+
+| Repository | Description | Link |
+|------------|-------------|------|
+| **playbook** | Bilingual Knowledge Center and HTML Playbook | [github.com/topping-tech/playbook](https://github.com/topping-tech/playbook) · [Live dashboard](https://topping-tech.github.io/playbook/) |
+| **it-dev** | Internal development workspace for Topping Tech systems | [github.com/topping-tech/it-dev](https://github.com/topping-tech/it-dev) *(private)* |
+
+---
+
+## What lives here
+
+- **Documentation** — Playbooks, business plans, sales guides, funding SOPs, and proposals (FA/EN)
+- **Internal tools** — CRM, automation, and logistics systems under active development
+- **Knowledge base** — Searchable HTML library published via GitHub Pages
+
+---
+
+## Maintainers
+
+**Hamid Barzin** · **Amir**
+
+*Topping Courier Inc. / Topping Tech*
