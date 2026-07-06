@@ -1,11 +1,11 @@
 name: Update org profile repo table
 
 on:
-  repository:
-    types: [created, renamed, deleted, transferred, publicized, privatized]
   workflow_dispatch:
+  repository_dispatch:
+    types: [update-repo-table]
   schedule:
-    - cron: "0 6 * * 1"  # weekly Monday 06:00 UTC — backup sync
+    - cron: "0 6 * * *"  # daily 06:00 UTC — catches new repos within 24h
 
 permissions:
   contents: write
