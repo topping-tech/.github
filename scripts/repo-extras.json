@@ -1,0 +1,7 @@
+{
+  "playbook": {
+    "extraLinks": [
+      { "label": "Live dashboard", "url": "https://topping-tech.github.io/playbook/" }
+    ]
+  }
+}

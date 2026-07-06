@@ -1,0 +1,41 @@
+name: Update org profile repo table
+
+on:
+  repository:
+    types: [created, renamed, deleted, transferred, publicized, privatized]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"  # weekly Monday 06:00 UTC — backup sync
+
+permissions:
+  contents: write
+
+jobs:
+  update-table:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Regenerate repository table
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG: topping-tech
+        run: node scripts/update-repo-table.js
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet profile/README.md; then
+            echo "No README changes."
+            exit 0
+          fi
+          git add profile/README.md
+          git commit -m "chore: auto-update org repository table"
+          git push

@@ -8,10 +8,14 @@ We build the systems, playbooks, and operational knowledge that power Topping Co
 
 ## Repositories
 
+<!-- REPO_TABLE_START -->
 | Repository | Description | Link |
 |------------|-------------|------|
-| **playbook** | Bilingual Knowledge Center and HTML Playbook | [github.com/topping-tech/playbook](https://github.com/topping-tech/playbook) · [Live dashboard](https://topping-tech.github.io/playbook/) |
-| **it-dev** | Internal development workspace for Topping Tech systems | [github.com/topping-tech/it-dev](https://github.com/topping-tech/it-dev) *(private)* |
+| **it-dev** | Internal development workspace for Topping Tech systems. | [github.com/topping-tech/it-dev](https://github.com/topping-tech/it-dev) *(private)* |
+| **playbook** | Bilingual Knowledge Center and HTML Playbook for Topping Courier. | [github.com/topping-tech/playbook](https://github.com/topping-tech/playbook) · [Live dashboard](https://topping-tech.github.io/playbook/) |
+<!-- REPO_TABLE_END -->
+
+> _This table updates automatically when repositories are added, renamed, or removed._
 
 ---
 
