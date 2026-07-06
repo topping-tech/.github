@@ -1,0 +1,15 @@
+# Add this file to every topping-tech repository as:
+#   .github/workflows/sync-org-profile.yml
+#
+# On every push to main, it triggers the org profile table update.
+# New repos: also covered by the repository event in topping-tech/.github
+
+name: Sync org profile
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  sync:
+    uses: topping-tech/.github/.github/workflows/sync-org-profile-reusable.yml@main

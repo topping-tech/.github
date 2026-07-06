@@ -1,61 +1,62 @@
-# Scripts — topping-tech/.github
+# Auto-sync org profile table
 
-## Auto-update org profile table
+## How it works (zero manual commands)
 
-The workflow **Update org profile repo table** regenerates `profile/README.md` from the GitHub API.
-
-### Triggers
+```
+gh repo create topping-tech/new-project
+        ↓
+repository event (org .github workflow)
+        ↓
+pinned-repos.json + README table updated
+        ↓
+push to main in any repo
+        ↓
+sync-org-profile.yml → repository_dispatch
+        ↓
+table updated again
+```
 
 | Trigger | When |
 |---------|------|
-| **Daily schedule** | Every day 06:00 UTC |
-| **Manual** | Actions → Run workflow |
-| **repository_dispatch** | After creating a repo (instant) |
+| **repository** | New / renamed / deleted org repo (instant) |
+| **push** | Any repo with `sync-org-profile.yml` on `main` |
+| **schedule** | Every 30 minutes (backup) |
 
-### After creating a new repository (instant update)
+## New repository setup
 
-```bash
-gh repo create topping-tech/NEW-REPO --public --description "..." \
-  && gh api repos/topping-tech/.github/dispatches \
-       -f event_type=update-repo-table
-```
+**Public repo:** Nothing required — `repository` event registers it automatically.
 
-Or trigger the workflow directly:
+**Private repo:** Also auto-registered on `repository` created event via `register-from-event.js`.
+
+Copy sync workflow into the new repo (or use template):
 
 ```bash
-gh workflow run update-org-readme.yml --repo topping-tech/.github
+mkdir -p .github/workflows
+curl -o .github/workflows/sync-org-profile.yml \
+  https://raw.githubusercontent.com/topping-tech/.github/main/templates/sync-org-profile.yml
+git add .github/workflows/sync-org-profile.yml
+git commit -m "ci: sync org profile on push"
+git push
 ```
 
-### Extra links (e.g. GitHub Pages)
+Or one-liner after create:
 
-Edit `scripts/repo-extras.json`:
-
-```json
-{
-  "playbook": {
-    "extraLinks": [
-      { "label": "Live dashboard", "url": "https://topping-tech.github.io/playbook/" }
-    ]
-  }
-}
+```bash
+gh repo create topping-tech/NEW --public --clone && \
+  mkdir -p NEW/.github/workflows && \
+  cp path/to/templates/sync-org-profile.yml NEW/.github/workflows/ && \
+  cd NEW && git add . && git commit -m "ci: sync org profile" && git push
 ```
 
-### Private repos (important)
+## Extra links (GitHub Pages, etc.)
 
-GitHub Actions `GITHUB_TOKEN` **cannot list private org repos**, so they would disappear from the table.
+Edit `scripts/repo-extras.json` in this repo.
 
-Add every private repo to `scripts/pinned-repos.json`:
+## Files
 
-```json
-{
-  "it-dev": {
-    "description": "Internal development workspace for Topping Tech systems.",
-    "private": true,
-    "html_url": "https://github.com/topping-tech/it-dev"
-  }
-}
-```
-
-When you create a new **private** repo, add it here before the next workflow run.
-
-The `.github` repo itself is excluded from the table.
+| File | Purpose |
+|------|---------|
+| `scripts/update-repo-table.js` | Build README table from API + pinned |
+| `scripts/register-from-event.js` | Auto-add repos from GitHub org events |
+| `scripts/pinned-repos.json` | Private repos + auto-registered repos |
+| `templates/sync-org-profile.yml` | Copy into each org repo |

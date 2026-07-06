@@ -1,0 +1,22 @@
+# Reusable workflow — call from any topping-tech repo on push to main
+name: Sync org profile table
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger org profile update
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createDispatchEvent({
+              owner: 'topping-tech',
+              repo: '.github',
+              event_type: 'update-repo-table',
+            });
